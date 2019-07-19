@@ -15,7 +15,6 @@ class Beck(ToolFunc):
         self.follow_event = threading.Event()
         self.unfollow_event = threading.Event()
         self.users_db_event = threading.Event()
-        self.c = c
 
         self.follow_list = []
         self.follow_list_byID = []
@@ -43,8 +42,11 @@ class Beck(ToolFunc):
             print("'USER_RESOURCES_LIST' list cannot be empty.")
             exit()
         for i in self.api.followers(screen_name=random.choice(self.c.bot_settings['USER_RESOURCES_LIST']), count=self.c.bot_settings['USER_GET_LIST_MAX']):
-            self.GetFollowListCur.execute("SELECT id=(?) FROM users", (i.id_str, ))
-            if self.GetFollowListCur.fetchall()[0][0]==1:
+            self.GetFollowListCur.execute("SELECT id FROM users WHERE id=:id", {'id': i.id_str})
+            fet = self.GetFollowListCur.fetchall()
+            if len(fet)==0:
+                self.follow_list.append(i)
+            elif fet[0][0]==1:
                 continue
             else:
                 self.follow_list.append(i)

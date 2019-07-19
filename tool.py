@@ -17,9 +17,9 @@ class ToolFunc(object):
         return False
 
     def db_check(self):
-        self.cur.execute("CREATE TABLE IF NOT EXISTS 'users2' (id, username, follow_status, recent)")
+        self.cur.execute("CREATE TABLE IF NOT EXISTS 'users' (id, username, follow_status, recent)")
         self.cur.execute("CREATE TABLE IF NOT EXISTS 'default_user' (screen_name)")
-        conn.commit()
+        self.c.conn.commit()
 
     def bot_sleep(self):
         hour = abs(self.c.bot_settings['START_AT_H'] - self.c.bot_settings['END_AT_H'])

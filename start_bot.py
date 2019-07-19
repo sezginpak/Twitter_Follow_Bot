@@ -14,10 +14,10 @@ while True:
     app.unfollow_event.clear()
     app.users_db_event.clear()
 
-    threading.Thread(target=app.follow_user_byID).start()
+    threading.Thread(target=app.follow_user_byID).run()
     app.follow_event.wait()
     app.users_db_into()
-    threading.Thread(target=app.unfollow_list_byID).start()
+    threading.Thread(target=app.unfollow_list_byID).run()
 
 
     app.users_db_event.wait()
@@ -37,4 +37,4 @@ while True:
         app.follow_list=[]
         app.follow_list_byID=[]
         app.fol_li_byID=[]
-        app.unfollow_list_byID[]
+        app.unfollow_list_byID=[]
