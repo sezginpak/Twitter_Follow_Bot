@@ -24,6 +24,8 @@ class Beck(ToolFunc):
         self.follow_count = 0
         self.start_followers = self.api.me().followers_count
 
+        print("Start Followers: {}".format(self.start_followers))
+
         self.bot_sleep()
         self.db_check()
 
@@ -59,11 +61,14 @@ class Beck(ToolFunc):
                 try:
                     self.api.get_user(user_id=i).follow()
                     self.follow_count+=1
+                    self.users_db_into_one(i)
                 except tweepy.TweepError as e:
                     if (e.api_code==420) or (e.api_code==429):
                         self.rate_limit_sleep = (1*60*60)
                         time.sleep(self.rate_limit_sleep)
                         self.rate_limit_sleep=0
+                        continue
+                    elif (e.api_code==50):
                         continue
                 self.unfollow_list_byID.append(i)
                 self.fol_li_byID.append(i)
@@ -88,6 +93,8 @@ class Beck(ToolFunc):
                 except tweepy.RateLimitError as e:
                     print('RateLimitError' + e.api_code)
                 except tweepy.TweepError as e:
+                    if (e.api_code==50):
+                        continue
                     print('TweepError' + e.api_code)
             else:
                 continue
@@ -96,13 +103,23 @@ class Beck(ToolFunc):
         self.unfollow_event.set()
 
     def users_db_into(self):
-        for i in self.fol_li_byID:
-            try:
-                self.cur.execute("INSERT INTO users VALUES (?, ?)", (i, self.api.get_user(user_id=i).screen_name))
-            except sqlite3.OperationalError as e:
-                print(e)
-            time.sleep(15)
+
+        # for i in self.fol_li_byID:
+        #     try:
+        #         self.cur.execute("INSERT INTO users VALUES (?, ?)", (i, self.api.get_user(user_id=i).screen_name))
+        #     except sqlite3.OperationalError as e:
+        #         print(e)
+        #     time.sleep(15)
         self.users_db_event.set()
+
+    def users_db_into_one(self, id=None):
+        if id==None: return False
+        data = self.api.get_user(user_id=id)
+        stat = data.following
+        if stat:
+            self.cur.execute("INSERT INTO users VALUES (?, ?, ?, ?)", (id, data.screen_name, stat, True))
+        else:
+            self.cur.execute("INSERT INTO users VALUES (?, ?, ?, ?)", (id, data.screen_name, stat, False))
 
 
 

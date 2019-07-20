@@ -1,10 +1,11 @@
 import main
-import threading, time
+import threading, time, sys
 
 app = main.Beck()
 
 app.get_follow_list()
 app.follow_user_byID()
+app.users_db_into()
 
 while True:
 
@@ -17,7 +18,7 @@ while True:
     threading.Thread(target=app.follow_user_byID).run()
     app.follow_event.wait()
     app.users_db_into()
-    threading.Thread(target=app.unfollow_list_byID).run()
+    threading.Thread(target=app.unfollow_user_byID).run()
 
 
     app.users_db_event.wait()
@@ -38,3 +39,7 @@ while True:
         app.follow_list_byID=[]
         app.fol_li_byID=[]
         app.unfollow_list_byID=[]
+
+app.users_db_into()
+app.current_status()
+sys.exit(0)

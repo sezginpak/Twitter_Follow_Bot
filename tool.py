@@ -25,3 +25,11 @@ class ToolFunc(object):
         hour = abs(self.c.bot_settings['START_AT_H'] - self.c.bot_settings['END_AT_H'])
         minute = abs(self.c.bot_settings['START_AT_M'] - self.c.bot_settings['END_AT_M'])
         self.bot_sleep_time = (hour*60*60 + minute*60)
+
+    def current_status(self):
+        me = self.api.me()
+        stat = [self.follow_count, me.followers_count, me.friends_count]
+        print("Bot Started Follow Count: {}".format(stat[0]))
+        print("Current Followers: {}".format(stat[1]))
+        print("Current Follow: {}".format(stat[2]))
+        
