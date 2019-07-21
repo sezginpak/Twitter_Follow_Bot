@@ -26,6 +26,9 @@ class Beck(ToolFunc):
 
         print("Start Followers: {}".format(self.start_followers))
 
+        self.rate_limit_sleep = 0
+        self.tour = 0
+
         self.bot_sleep()
         self.db_check()
 
@@ -43,15 +46,16 @@ class Beck(ToolFunc):
         if len(self.c.bot_settings['USER_RESOURCES_LIST'])==0:
             print("'USER_RESOURCES_LIST' list cannot be empty.")
             exit()
-        for i in self.api.followers(screen_name=random.choice(self.c.bot_settings['USER_RESOURCES_LIST']), count=self.c.bot_settings['USER_GET_LIST_MAX']):
-            self.GetFollowListCur.execute("SELECT id FROM users WHERE id=:id", {'id': i.id_str})
-            fet = self.GetFollowListCur.fetchall()
-            if len(fet)==0:
-                self.follow_list.append(i)
-            elif fet[0][0]==1:
-                continue
-            else:
-                self.follow_list.append(i)
+        for j in range(1, 6):
+            for i in self.api.followers(screen_name=random.choice(self.c.bot_settings['USER_RESOURCES_LIST']), count=self.c.bot_settings['USER_GET_LIST_MAX']):
+                self.GetFollowListCur.execute("SELECT id FROM users WHERE id=:id", {'id': i.id_str})
+                fet = self.GetFollowListCur.fetchall()
+                if len(fet)==0:
+                    self.follow_list.append(i)
+                elif fet[0][0]==1:
+                    continue
+                else:
+                    self.follow_list.append(i)
         for i in self.follow_list:
             self.follow_list_byID.append(i.id_str)
 
@@ -86,7 +90,11 @@ class Beck(ToolFunc):
         for i in self.unfollow_list_byID:
             if self.rate_limit_sleep!=0:
                 time.sleep(self.rate_limit_sleep)
-            status = self.api.get_user(user_id=i)
+            try:
+                status = self.api.get_user(user_id=i)
+            except tweepy.TweepError as e:
+                if (e.api_code==50):
+                    continue
             if status.following:
                 try:
                     status.unfollow()
@@ -121,7 +129,7 @@ class Beck(ToolFunc):
         else:
             self.cur.execute("INSERT INTO users VALUES (?, ?, ?, ?)", (id, data.screen_name, stat, False))
 
-
+        self.c.conn.commit()
 
 
 

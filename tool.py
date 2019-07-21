@@ -29,7 +29,7 @@ class ToolFunc(object):
     def current_status(self):
         me = self.api.me()
         stat = [self.follow_count, me.followers_count, me.friends_count]
+        print("")
         print("Bot Started Follow Count: {}".format(stat[0]))
         print("Current Followers: {}".format(stat[1]))
         print("Current Follow: {}".format(stat[2]))
-        

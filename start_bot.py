@@ -1,11 +1,19 @@
 import main
 import threading, time, sys
+import signal
+
+def signal_handler(signal, frame):
+    app.users_db_into()
+    app.current_status()
+    sys.exit(0)
+
+signal.signal(signal.SIGINT, signal_handler)
 
 app = main.Beck()
 
-app.get_follow_list()
-app.follow_user_byID()
-app.users_db_into()
+# app.get_follow_list()
+# app.follow_user_byID()
+# app.users_db_into()
 
 while True:
 
@@ -23,11 +31,11 @@ while True:
 
     app.users_db_event.wait()
 
-    time.sleep(3)
+    time.sleep(5)
 
 
 
-    if time.localtime().tm_hour == main.c.bot_settings['END_AT_H'] and time.localtime().tm_minute == main.c.bot_settings['END_AT_M']:
+    if time.localtime().tm_hour == app.c.bot_settings['END_AT_H'] and time.localtime().tm_minute == app.c.bot_settings['END_AT_M']:
         time.sleep(app.bot_sleep_time)
         print("""
             Start Followers: {}
