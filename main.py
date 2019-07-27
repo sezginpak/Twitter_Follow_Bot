@@ -47,15 +47,21 @@ class Beck(ToolFunc):
             print("'USER_RESOURCES_LIST' list cannot be empty.")
             exit()
         for j in range(1, 6):
-            for i in self.api.followers(screen_name=random.choice(self.c.bot_settings['USER_RESOURCES_LIST']), count=self.c.bot_settings['USER_GET_LIST_MAX']):
-                self.GetFollowListCur.execute("SELECT id FROM users WHERE id=:id", {'id': i.id_str})
-                fet = self.GetFollowListCur.fetchall()
-                if len(fet)==0:
-                    self.follow_list.append(i)
-                elif fet[0][0]==1:
+            try:
+                for i in self.api.followers(screen_name=random.choice(self.c.bot_settings['USER_RESOURCES_LIST']), count=self.c.bot_settings['USER_GET_LIST_MAX']):
+                    self.GetFollowListCur.execute("SELECT id FROM users WHERE id=:id", {'id': i.id_str})
+                    fet = self.GetFollowListCur.fetchall()
+                    if len(fet)==0:
+                        self.follow_list.append(i)
+                    elif fet[0][0]==1:
+                        continue
+                    elif len(fet)!=0:
+                        continue
+                    else:
+                        self.follow_list.append(i)
+            except tweepy.TweepError as e:
+                if e.api_code==34:
                     continue
-                else:
-                    self.follow_list.append(i)
         for i in self.follow_list:
             self.follow_list_byID.append(i.id_str)
 

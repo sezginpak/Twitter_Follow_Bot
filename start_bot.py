@@ -48,6 +48,8 @@ while True:
         app.fol_li_byID=[]
         app.unfollow_list_byID=[]
 
+    app.current_status()
+
 app.users_db_into()
 app.current_status()
 sys.exit(0)
