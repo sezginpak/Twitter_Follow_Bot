@@ -1,5 +1,6 @@
 import random, time, threading, sys
 import tweepy
+import datetime
 
 import sqlite3
 from tool import ToolFunc
@@ -46,26 +47,28 @@ class Beck(ToolFunc):
         if len(self.c.bot_settings['USER_RESOURCES_LIST'])==0:
             print("'USER_RESOURCES_LIST' list cannot be empty.")
             exit()
+        print('Current Follow: {} --> Hour: {}, Minute: {}, Second: {}'.format(self.follow_count, time.localtime().tm_hour, time.localtime().tm_min, time.localtime().tm_sec))
         for j in range(1, 6):
+            u_n = random.choice(self.c.bot_settings['USER_RESOURCES_LIST'])
             try:
-                for i in self.api.followers(screen_name=random.choice(self.c.bot_settings['USER_RESOURCES_LIST']), count=self.c.bot_settings['USER_GET_LIST_MAX']):
+                for i in self.api.followers(screen_name=u_n, count=self.c.bot_settings['USER_GET_LIST_MAX']):
                     self.GetFollowListCur.execute("SELECT id FROM users WHERE id=:id", {'id': i.id_str})
                     fet = self.GetFollowListCur.fetchall()
                     if len(fet)==0:
                         self.follow_list.append(i)
-                    elif fet[0][0]==1:
-                        continue
                     elif len(fet)!=0:
                         continue
-                    else:
-                        self.follow_list.append(i)
             except tweepy.TweepError as e:
                 if e.api_code==34:
+                    print('ERROR! : {}'.format(e.api_code))
                     continue
         for i in self.follow_list:
             self.follow_list_byID.append(i.id_str)
 
     def follow_user_byID(self):
+        if self.follow_list_byID==[]:
+            self.follow_event.set()
+            return
         for i in self.follow_list_byID:
             if not self.following_check(i):
                 try:
@@ -92,6 +95,9 @@ class Beck(ToolFunc):
 
 
     def unfollow_user_byID(self):
+        if self.unfollow_list_byID==[]:
+            self.unfollow_event.set()
+            return
         time.sleep(self.c.bot_settings['UNFOLLOW_TIME'])
         for i in self.unfollow_list_byID:
             if self.rate_limit_sleep!=0:

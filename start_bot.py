@@ -35,7 +35,7 @@ while True:
 
 
 
-    if time.localtime().tm_hour == app.c.bot_settings['END_AT_H'] and time.localtime().tm_minute == app.c.bot_settings['END_AT_M']:
+    if time.localtime().tm_hour == app.c.bot_settings['END_AT_H'] and time.localtime().tm_min == app.c.bot_settings['END_AT_M']:
         time.sleep(app.bot_sleep_time)
         print("""
             Start Followers: {}
