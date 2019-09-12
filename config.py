@@ -6,14 +6,14 @@ oauth_configure = {
 }
 
 bot_settings = {
-    "YOUR_USERNAME": "sezginpak",
+    "YOUR_USERNAME": "",
     "FOLLOW_TIME": 240,  # --> INTEGER
     "UNFOLLOW_TIME": 240,  # --> INTEGER
     "FOLLOW_PER_DAY": None,
     "UNFOLLOW_PER_DAY": None,
     "USER_MAX_FOLLOW": 500,  # --> INTEGER
     "USER_MIN_FOLLOW": 250,  # --> INTEGER
-    "USER_GET_LIST_MAX": 5,  # --> INTEGER
+    "USER_GET_LIST_MAX": 20,  # --> INTEGER
     "USER_RESOURCES_LIST": [],
     "USER_DEFAULT_FOLLOW": [
 
@@ -41,9 +41,6 @@ api = tweepy.API(auth)
 
 
 conn=sqlite3.connect(bot_settings['YOUR_USERNAME']+".db", timeout=15)
-
-
-
 
 
 

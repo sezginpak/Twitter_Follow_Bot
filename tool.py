@@ -11,10 +11,12 @@ class ToolFunc(object):
 
     def following_check(self, id=None):
         if id==None: return False
-        self.ToolCur.execute("SELECT (id=?) FROM users", (id, ))
-        if self.ToolCur.fetchall()[0][0]==1:
-            return True
-        return False
+        self.ToolCur.execute("SELECT id FROM users WHERE id=?", (str(id), ))
+        res = self.ToolCur.fetchall()
+        if len(res)==0:
+            return False
+        if res[0][0]!='0': return True
+        return True
 
     def db_check(self):
         self.cur.execute("CREATE TABLE IF NOT EXISTS 'users' (id, username, follow_status, recent)")

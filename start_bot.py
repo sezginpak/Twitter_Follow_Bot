@@ -15,21 +15,25 @@ app = main.Beck()
 # app.follow_user_byID()
 # app.users_db_into()
 
+
 while True:
 
     app.get_follow_list()
-
-    app.follow_event.clear()
-    app.unfollow_event.clear()
-    app.users_db_event.clear()
-
-    threading.Thread(target=app.follow_user_byID).run()
-    app.follow_event.wait()
-    app.users_db_into()
-    threading.Thread(target=app.unfollow_user_byID).run()
+    app.th1 = False
+    app.th2 = False
 
 
-    app.users_db_event.wait()
+    th1 = threading.Thread(target=app.follow_user_byID)
+    th1.run()
+    while app.th1==False:
+        time.sleep(app.c.bot_settings['FOLLOW_TIME'])
+
+    th2 = threading.Thread(target=app.unfollow_user_byID)
+    th2.run()
+    while app.th2==False:
+        time.sleep(app.c.bot_settings['UNFOLLOW_TIME'])
+
+
 
     time.sleep(5)
 

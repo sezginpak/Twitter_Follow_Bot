@@ -17,6 +17,9 @@ class Beck(ToolFunc):
         self.unfollow_event = threading.Event()
         self.users_db_event = threading.Event()
 
+        self.th1 = False
+        self.th2 = False
+
         self.follow_list = []
         self.follow_list_byID = []
         self.fol_li_byID = []
@@ -48,31 +51,40 @@ class Beck(ToolFunc):
             print("'USER_RESOURCES_LIST' list cannot be empty.")
             exit()
         print('Current Follow: {} --> Hour: {}, Minute: {}, Second: {}'.format(self.follow_count, time.localtime().tm_hour, time.localtime().tm_min, time.localtime().tm_sec))
-        for j in range(1, 6):
+        for j in range(1, 2):
             u_n = random.choice(self.c.bot_settings['USER_RESOURCES_LIST'])
             try:
                 for i in self.api.followers(screen_name=u_n, count=self.c.bot_settings['USER_GET_LIST_MAX']):
                     self.GetFollowListCur.execute("SELECT id FROM users WHERE id=:id", {'id': i.id_str})
                     fet = self.GetFollowListCur.fetchall()
+                    print('fet: {}'.format(fet))
                     if len(fet)==0:
                         self.follow_list.append(i)
                     elif len(fet)!=0:
                         continue
             except tweepy.TweepError as e:
-                if e.api_code==34:
-                    print('ERROR! : {}'.format(e.api_code))
-                    continue
+                print(e)
+                print('ERROR! code : {}'.format(e.api_code))
+                time.sleep(500)
+            except tweepy.RateLimitError as e:
+                print(e)
+                time.sleep(500)
+
         for i in self.follow_list:
             self.follow_list_byID.append(i.id_str)
+        print("Follow List Len: {}".format(len(self.follow_list_byID)))
 
     def follow_user_byID(self):
         if self.follow_list_byID==[]:
-            self.follow_event.set()
+            self.th1 = True
             return
         for i in self.follow_list_byID:
             if not self.following_check(i):
                 try:
-                    self.api.get_user(user_id=i).follow()
+                    print(85)
+                    usr = self.api.get_user(user_id=i)
+                    usr.follow()
+                    print(usr.screen_name)
                     self.follow_count+=1
                     self.users_db_into_one(i)
                 except tweepy.TweepError as e:
@@ -82,7 +94,12 @@ class Beck(ToolFunc):
                         self.rate_limit_sleep=0
                         continue
                     elif (e.api_code==50):
+                        print(e)
                         continue
+                    else:
+                        print('undefined error')
+                except:
+                    print('undefined error2')
                 self.unfollow_list_byID.append(i)
                 self.fol_li_byID.append(i)
             else:
@@ -91,12 +108,12 @@ class Beck(ToolFunc):
         self.database_commit()
         self.follow_list.pop()
         self.follow_list_byID.pop()
-        self.follow_event.set()
+        self.th1 = True
 
 
     def unfollow_user_byID(self):
         if self.unfollow_list_byID==[]:
-            self.unfollow_event.set()
+            self.th2 = True
             return
         time.sleep(self.c.bot_settings['UNFOLLOW_TIME'])
         for i in self.unfollow_list_byID:
@@ -120,7 +137,7 @@ class Beck(ToolFunc):
                 continue
             time.sleep(self.c.bot_settings['UNFOLLOW_TIME'])
         self.unfollow_list_byID.pop()
-        self.unfollow_event.set()
+        self.th2 = True
 
     def users_db_into(self):
 
