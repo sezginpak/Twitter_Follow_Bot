@@ -3,7 +3,6 @@ import threading, time, sys
 import signal
 
 def signal_handler(signal, frame):
-    app.users_db_into()
     app.current_status()
     sys.exit(0)
 
@@ -54,6 +53,5 @@ while True:
 
     app.current_status()
 
-app.users_db_into()
 app.current_status()
 sys.exit(0)

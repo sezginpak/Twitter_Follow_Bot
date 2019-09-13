@@ -57,7 +57,6 @@ class Beck(ToolFunc):
                 for i in self.api.followers(screen_name=u_n, count=self.c.bot_settings['USER_GET_LIST_MAX']):
                     self.GetFollowListCur.execute("SELECT id FROM users WHERE id=:id", {'id': i.id_str})
                     fet = self.GetFollowListCur.fetchall()
-                    print('fet: {}'.format(fet))
                     if len(fet)==0:
                         self.follow_list.append(i)
                     elif len(fet)!=0:
@@ -69,10 +68,11 @@ class Beck(ToolFunc):
             except tweepy.RateLimitError as e:
                 print(e)
                 time.sleep(500)
+            time.sleep(30)
 
         for i in self.follow_list:
             self.follow_list_byID.append(i.id_str)
-        print("Follow List Len: {}".format(len(self.follow_list_byID)))
+        print("Follow list len: {}".format(len(self.follow_list_byID)))
 
     def follow_user_byID(self):
         if self.follow_list_byID==[]:
@@ -81,10 +81,9 @@ class Beck(ToolFunc):
         for i in self.follow_list_byID:
             if not self.following_check(i):
                 try:
-                    print(85)
                     usr = self.api.get_user(user_id=i)
                     usr.follow()
-                    print(usr.screen_name)
+                    print('{} Follow: {} --> Hour: {}, Minute: {}, Second: {}'.format(usr.screen_name, self.follow_count, time.localtime().tm_hour, time.localtime().tm_min, time.localtime().tm_sec))
                     self.follow_count+=1
                     self.users_db_into_one(i)
                 except tweepy.TweepError as e:
@@ -97,9 +96,9 @@ class Beck(ToolFunc):
                         print(e)
                         continue
                     else:
-                        print('undefined error')
+                        print('undefined error by TweepError)
                 except:
-                    print('undefined error2')
+                    print('undefined error')
                 self.unfollow_list_byID.append(i)
                 self.fol_li_byID.append(i)
             else:
@@ -127,6 +126,7 @@ class Beck(ToolFunc):
             if status.following:
                 try:
                     status.unfollow()
+                    print('{} Unfollow: {} --> Hour: {}, Minute: {}, Second: {}'.format(status.screen_name, self.follow_count, time.localtime().tm_hour, time.localtime().tm_min, time.localtime().tm_sec))
                 except tweepy.RateLimitError as e:
                     print('RateLimitError' + e.api_code)
                 except tweepy.TweepError as e:
@@ -139,15 +139,6 @@ class Beck(ToolFunc):
         self.unfollow_list_byID.pop()
         self.th2 = True
 
-    def users_db_into(self):
-
-        # for i in self.fol_li_byID:
-        #     try:
-        #         self.cur.execute("INSERT INTO users VALUES (?, ?)", (i, self.api.get_user(user_id=i).screen_name))
-        #     except sqlite3.OperationalError as e:
-        #         print(e)
-        #     time.sleep(15)
-        self.users_db_event.set()
 
     def users_db_into_one(self, id=None):
         if id==None: return False
