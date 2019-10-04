@@ -61,6 +61,7 @@ class Beck(ToolFunc):
                         self.follow_list.append(i)
                     elif len(fet)!=0:
                         continue
+                print('Get users: {}'.format(u_n))
             except tweepy.TweepError as e:
                 print(e)
                 print('ERROR! code : {}'.format(e.api_code))
@@ -96,7 +97,7 @@ class Beck(ToolFunc):
                         print(e)
                         continue
                     else:
-                        print('undefined error by TweepError)
+                        print('undefined error by TweepError')
                 except:
                     print('undefined error')
                 self.unfollow_list_byID.append(i)

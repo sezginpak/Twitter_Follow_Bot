@@ -1,25 +1,26 @@
 oauth_configure = {
-    "CONSUMER_API_KEY": "",
-    "CONSUMER_API_SECRET_KEY": "",
-    "ACCESS_TOKEN": "",
-    "ACCESS_TOKEN_SECRET": "",
+    "CONSUMER_API_KEY": "FfmDppGRW9jr008GttEeSDrJe",
+    "CONSUMER_API_SECRET_KEY": "nZHGiEyYTDTQrY7q6fVOZ3VLqBr3ehcpVmEKzg3ZvDTRtOYMU3",
+    "ACCESS_TOKEN": "779579582278201344-ceX42fKKYebyDJ7lIna9UYfIbD4Ph7u",
+    "ACCESS_TOKEN_SECRET": "9QetlVRE6CMw113btodsIcMmfVm2j6dW0y5E1PN8ah7M3",
 }
 
 bot_settings = {
-    "YOUR_USERNAME": "",
+    "YOUR_USERNAME": "sezginpak",
     "FOLLOW_TIME": 240,  # --> INTEGER
     "UNFOLLOW_TIME": 240,  # --> INTEGER
     "FOLLOW_PER_DAY": None,
     "UNFOLLOW_PER_DAY": None,
     "USER_MAX_FOLLOW": 500,  # --> INTEGER
     "USER_MIN_FOLLOW": 250,  # --> INTEGER
-    "USER_GET_LIST_MAX": 20,  # --> INTEGER
-    "USER_RESOURCES_LIST": [],
+    "USER_GET_LIST_MAX": 25,  # --> INTEGER
+    "USER_RESOURCES_LIST": ["sivribiber", "tahsinhasoglu", "ProfDemirtas", "tonjukuk", "burakbirakya", "benneizledim", "civaba", "atasozutok", "istetamburasi",
+                            "atadogann", "unquale", "kriptoburak", "teyitorg", "ironikadamm", "Overlokcu12", "yavuzsyildiz", "HSevkiTopuz", "huorelensarr", "hocafaktoru", "yineutandik", "turkicmemes", "lordsinov", "unibilgi", "LOmecha"],
     "USER_DEFAULT_FOLLOW": [
 
     ],
     "USER_BLACKLIST": [
-        "",
+        "goknrkaraa",
         "",
     ],
     "FOLLOW_RECENT_FEED": True,

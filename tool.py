@@ -1,4 +1,6 @@
 import config as c
+import time
+from tweepy.error import RateLimitError
 
 class ToolFunc(object):
     def __init__(self):
@@ -29,7 +31,11 @@ class ToolFunc(object):
         self.bot_sleep_time = (hour*60*60 + minute*60)
 
     def current_status(self):
-        me = self.api.me()
+        try:
+            me = self.api.me()
+        except RateLimitError:
+            time.sleep(1000)
+            me = self.api.me()
         stat = [self.follow_count, me.followers_count, me.friends_count]
         print("")
         print("Bot Started Follow Count: {}".format(stat[0]))

@@ -49,7 +49,7 @@ while True:
         app.follow_list=[]
         app.follow_list_byID=[]
         app.fol_li_byID=[]
-        app.unfollow_list_byID=[]
+        time.sleep(1000)
 
     app.current_status()
 
