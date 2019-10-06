@@ -14,6 +14,7 @@ app = main.Beck()
 # app.follow_user_byID()
 # app.users_db_into()
 
+app.default_user_save()
 
 while True:
 

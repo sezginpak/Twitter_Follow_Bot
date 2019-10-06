@@ -63,11 +63,15 @@ class Beck(ToolFunc):
                         continue
                 print('Get users: {}'.format(u_n))
             except tweepy.TweepError as e:
+                if (e.api_code==50):
+                    self.c.bot_settings['USER_RESOURCES_LIST'].remove(u_n)
+                    continue
                 print(e)
                 print('ERROR! code : {}'.format(e.api_code))
                 time.sleep(500)
             except tweepy.RateLimitError as e:
                 print(e)
+                print('74')
                 time.sleep(500)
             time.sleep(30)
 
@@ -84,7 +88,7 @@ class Beck(ToolFunc):
                 try:
                     usr = self.api.get_user(user_id=i)
                     usr.follow()
-                    print('{} Follow: {} --> Hour: {}, Minute: {}, Second: {}'.format(usr.screen_name, self.follow_count, time.localtime().tm_hour, time.localtime().tm_min, time.localtime().tm_sec))
+                    # print('{} Follow: {} --> Hour: {}, Minute: {}, Second: {}'.format(usr.screen_name, self.follow_count, time.localtime().tm_hour, time.localtime().tm_min, time.localtime().tm_sec))
                     self.follow_count+=1
                     self.users_db_into_one(i)
                 except tweepy.TweepError as e:
@@ -95,6 +99,7 @@ class Beck(ToolFunc):
                         continue
                     elif (e.api_code==50):
                         print(e)
+                        print("102")
                         continue
                     else:
                         print('undefined error by TweepError')
