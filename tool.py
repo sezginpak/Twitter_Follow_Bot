@@ -37,13 +37,13 @@ class ToolFunc(object):
                 self.cur.execute("SELECT * FROM default_user WHERE screen_name=:screen_name", {'screen_name': i})
                 fet = self.cur.fetchall()
                 if len(fet)==0:
-                    self.cur.execute("INSERT INTO default_user VALUES (screen_name=:screen_name)", {'screen_name': i})
+                    self.cur.execute("INSERT INTO default_user VALUES (?)", (i,))
                     self.c.conn.commit()
                 else:
                     continue
         else:
             if save:
-                self.cur.execute("INSERT INTO default_user VALUES (screen_name=:screen_name)", {'screen_name': screen_name})
+                self.cur.execute("INSERT INTO default_user VALUES (?)", (i,))
                 self.c.conn.commit()
             else:
                 self.cur.execute("SELECT * FROM default_user WHERE screen_name=:screen_name", {'screen_name': screen_name})

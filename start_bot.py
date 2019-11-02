@@ -41,10 +41,10 @@ while True:
 
     if time.localtime().tm_hour == app.c.bot_settings['END_AT_H'] and time.localtime().tm_min == app.c.bot_settings['END_AT_M']:
         time.sleep(app.bot_sleep_time)
-        print("""
-            Start Followers: {}
-            Current Followers: {}
-            """.format(app.start_followers, app.api.me().followers_count))
+        # print("""
+        #     Start Followers: {}
+        #     Current Followers: {}
+        #     """.format(app.start_followers, app.api.me().followers_count))
         if len(app.unfollow_list_byID)!=0:
             app.unfollow_user_byID()
         app.follow_list=[]
@@ -52,7 +52,7 @@ while True:
         app.fol_li_byID=[]
         time.sleep(1000)
 
-    app.current_status()
+    # app.current_status()
 
 app.current_status()
 sys.exit(0)

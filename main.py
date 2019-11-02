@@ -87,7 +87,16 @@ class Beck(ToolFunc):
             if not self.following_check(i):
                 try:
                     usr = self.api.get_user(user_id=i)
-                    usr.follow()
+                    if not usr.following:
+                        if usr.followers_count < 10:
+                            tl = tweepy.models.User.timeline(count=1)
+                            if len(tl)==0:
+                                continue
+                            else:
+                                if (time.time() - datetime.datetime.timestamp(tl[0].created_at) < 604800):
+                                    usr.follow()
+                                else:
+                                    continue
                     # print('{} Follow: {} --> Hour: {}, Minute: {}, Second: {}'.format(usr.screen_name, self.follow_count, time.localtime().tm_hour, time.localtime().tm_min, time.localtime().tm_sec))
                     self.follow_count+=1
                     self.users_db_into_one(i)
@@ -99,10 +108,9 @@ class Beck(ToolFunc):
                         continue
                     elif (e.api_code==50):
                         print(e)
-                        print("102")
                         continue
                     else:
-                        print('undefined error by TweepError')
+                        print(e)
                 except:
                     print('undefined error')
                 self.unfollow_list_byID.append(i)
@@ -132,7 +140,7 @@ class Beck(ToolFunc):
             if status.following:
                 try:
                     status.unfollow()
-                    print('{} Unfollow: {} --> Hour: {}, Minute: {}, Second: {}'.format(status.screen_name, self.follow_count, time.localtime().tm_hour, time.localtime().tm_min, time.localtime().tm_sec))
+                    # print('{} Unfollow: {} --> Hour: {}, Minute: {}, Second: {}'.format(status.screen_name, self.follow_count, time.localtime().tm_hour, time.localtime().tm_min, time.localtime().tm_sec))
                 except tweepy.RateLimitError as e:
                     print('RateLimitError' + e.api_code)
                 except tweepy.TweepError as e:
