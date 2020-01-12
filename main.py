@@ -97,6 +97,15 @@ class Beck(ToolFunc):
                                     usr.follow()
                                 else:
                                     continue
+                        elif usr.followers_count > 1000:
+                            if usr.friends_count > 500:
+                                usr.follow()
+                            else:
+                                continue
+                        elif usr.followers_count > 10 and usr.followers_count < 1000:
+                            usr.follow()
+                        else:
+                            continue
                     # print('{} Follow: {} --> Hour: {}, Minute: {}, Second: {}'.format(usr.screen_name, self.follow_count, time.localtime().tm_hour, time.localtime().tm_min, time.localtime().tm_sec))
                     self.follow_count+=1
                     self.users_db_into_one(i)
